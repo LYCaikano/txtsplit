@@ -100,32 +100,32 @@ button,
   margin-bottom: 20px;
   cursor: pointer;
 
-  /* 核心修复 */
-  background-color: rgba(255, 255, 255, 0.01); /* iOS需要更接近透明的值 */
-  border: 1px solid rgba(255, 255, 255, 0.8); /* 增加边框透明度 */
+  /* 关键修复：背景与层叠上下文 */
+  background-color: rgba(255, 255, 255, 0.001); /* 极低透明度，非纯透明 */
+  border: 1px solid rgba(255, 255, 255, 0.8);
   color: white;
-  
+
   /* 模糊滤镜优化 */
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  
-  /* 层叠上下文优化 */
-  position: relative; /* 确保正确的层叠上下文 */
-  transform: translateZ(0); /* 强制GPU加速 */
-  isolation: isolate; /* 防止混合模式冲突 */
-  
+  -webkit-backdrop-filter: blur(10px) saturate(180%); /* 增强饱和度 */
+  backdrop-filter: blur(10px) saturate(180%);
+
+  /* 强制硬件加速与层叠隔离 */
+  transform: translateZ(0) scale(1); /* 双重GPU加速 */
+  position: relative; /* 确保正确的定位上下文 */
+  isolation: isolate; /* 隔离层叠防止混合冲突 */
+
   /* 阴影优化 */
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); /* 降低阴影强度 */
-  
-  /* 移除冗余属性 */
-  /* 删除 background-clip 相关声明（默认值已足够） */
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+  opacity: 1;
+  animation: none;
 }
 
+/* 悬停状态微调 */
 button:hover,
 .custom-button:hover,
 .custom-file-button:hover {
-  background-color: rgba(255, 255, 255, 0.15); /* 更平滑的过渡 */
-  border: 1px solid rgba(255, 255, 255, 1); /* 悬停时边框更明显 */
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 1);
 }
 
 /* iOS 14+ 专用修复 */
@@ -133,8 +133,7 @@ button:hover,
   button,
   .custom-button,
   .custom-file-button {
-    background-color: rgba(255, 255, 255, 0.001); /* iOS需要极低透明度 */
-    -webkit-backdrop-filter: saturate(180%) blur(10px); /* 增强滤镜效果 */
+    -webkit-backdrop-filter: saturate(200%) blur(12px); /* 增强模糊强度 */
   }
 }
 
