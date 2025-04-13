@@ -91,6 +91,7 @@ input::placeholder {
 button,
 .custom-button,
 .custom-file-button {
+  /* 原有基础样式保留 */
   font-size: 1rem;
   height: 60px;
   width: 90%;
@@ -99,41 +100,62 @@ button,
   letter-spacing: 1px;
   margin-bottom: 20px;
   cursor: pointer;
-
-  /* 关键修复：背景与层叠上下文 */
-  background-color: rgba(255, 255, 255, 0.001); /* 极低透明度，非纯透明 */
-  border: 1px solid rgba(255, 255, 255, 0.8);
   color: white;
 
-  /* 模糊滤镜优化 */
-  -webkit-backdrop-filter: blur(10px) saturate(180%); /* 增强饱和度 */
+  /* ---------- 关键修复部分 ---------- */
+  
+  /* 1. 背景层优化 */
+  background-color: rgba(255, 255, 255, 0.001); /* 极低透明度绕过iOS Bug */
+  
+  /* 2. 毛玻璃效果层 (伪元素实现) */
+  position: relative; /* 必须 */
+  isolation: isolate; /* 隔离层叠上下文 */
+  overflow: hidden; /* 裁剪伪元素溢出 */
+}
+button::before,
+.custom-button::before,
+.custom-file-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: inherit;
+
+  /* 核心模糊效果 */
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
   backdrop-filter: blur(10px) saturate(180%);
-
-  /* 强制硬件加速与层叠隔离 */
-  transform: translateZ(0) scale(1); /* 双重GPU加速 */
-  position: relative; /* 确保正确的定位上下文 */
-  isolation: isolate; /* 隔离层叠防止混合冲突 */
-
-  /* 阴影优化 */
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-  opacity: 1;
-  animation: none;
+  
+  /* 修复层叠关系 */
+  z-index: -1; /* 确保伪元素在背景层 */
 }
 
-/* 悬停状态微调 */
-button:hover,
-.custom-button:hover,
-.custom-file-button:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 1);
+/* 3. 边框与阴影优化 */
+button,
+.custom-button,
+.custom-file-button {
+  border: 1px solid rgba(255, 255, 255, 0.6); /* 降低边框不透明度 */
+  box-shadow: 
+    0 0 8px rgba(255, 255, 255, 0.15), /* 内层光晕 */
+    0 0 12px rgba(0, 0, 0, 0.1); /* 外层阴影增加层次感 */
 }
 
-/* iOS 14+ 专用修复 */
+/* 4. 悬停状态增强 */
+button:hover::before,
+.custom-button:hover::before,
+.custom-file-button:hover::before {
+  background-color: rgba(255, 255, 255, 0.15); /* 悬停时增强背景 */
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+/* 5. iOS 14+ 专用修复 */
 @supports (-webkit-touch-callout: none) {
-  button,
-  .custom-button,
-  .custom-file-button {
-    -webkit-backdrop-filter: saturate(200%) blur(12px); /* 增强模糊强度 */
+  button::before,
+  .custom-button::before,
+  .custom-file-button::before {
+    -webkit-backdrop-filter: blur(12px) saturate(200%); /* 增强模糊强度 */
+    background-color: rgba(255, 255, 255, 0.0001); /* iOS需要更低透明度 */
   }
 }
 
