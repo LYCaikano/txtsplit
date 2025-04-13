@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <title>文件分割器</title>
+    <style>
+      body { font-family: sans-serif; margin: 2em; }
+      input, button { font-size: 1em; }
+      #result p { margin: 0.5em 0; }
+    </style>
+  </head>
+  <body>
+    <h2>文件分割器</h2>
+    <p>请选择一个 TXT 文件，并输入每个分块的大小（单位：MB）。</p>
+    <input type="file" id="fileInput" accept=".txt" required>
+    <br><br>
+    <label for="chunkSize">每个分块大小 (MB):</label>
+    <input type="number" id="chunkSize" min="0.1" step="0.1" placeholder="例如：1" required>
+    <br><br>
+    <button id="splitBtn">开始分割</button>
+    <hr>
+    <div id="result"></div>
+    
+    <script>
+      // 当点击“开始分割”按钮时触发，不刷新页面直接在下方显示分割后文件的下载链接
+      document.getElementById("splitBtn").addEventListener("click", function() {
+        const fileInput = document.getElementById("fileInput");
+        const chunkSizeInput = document.getElementById("chunkSize");
+        if (!fileInput.files[0]) {
+          alert("请先选择文件！");
+          return;
+        }
+        const file = fileInput.files[0];
+        const chunkSizeMB = parseFloat(chunkSizeInput.value);
+        if (isNaN(chunkSizeMB) || chunkSizeMB <= 0) {
+          alert("请输入有效的分块大小！");
+          return;
+        }
+        const MAX_BYTES = chunkSizeMB * 1024 * 1024;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const arrayBuffer = e.target.result;
+          const bytes = new Uint8Array(arrayBuffer);
+          const decoder = new TextDecoder("utf-8", { fatal: true });
+          let offset = 0;
+          const chunks = [];
+          // 分割文件，每个分块最多 MAX_BYTES，同时确保不会破坏 UTF-8 多字节字符
+          while (offset < bytes.length) {
+            let end = Math.min(offset + MAX_BYTES, bytes.length);
+            while (end > offset) {
+              try {
+                decoder.decode(bytes.subarray(offset, end));
+                break; // 当前片段能正常解码
+              } catch (error) {
+                end--;
+              }
+            }
+            if (end === offset) {
+              alert("无法在不破坏 UTF-8 字符的情况下分割文件。");
+              return;
+            }
+            chunks.push(bytes.slice(offset, end));
+            offset = end;
+          }
+          showDownloadLinks(file.name, chunks);
+        };
+        reader.onerror = function() {
+          alert("读取文件失败！");
+        };
+        reader.readAsArrayBuffer(file);
+      });
+      
+      /**
+       * 根据原始文件名和分块后的数据生成下载链接，并显示到页面下方
+       * 文件命名规则：去除原文件扩展名后 + "_partX.txt"
+       */
+      function showDownloadLinks(originalName, chunks) {
+        const baseName = originalName.replace(/\.[^/.]+$/, "");
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "";  // 清空上一次的结果
+        
+        chunks.forEach((chunk, index) => {
+          const blob = new Blob([chunk], { type: "text/plain;charset=utf-8" });
+          const url = URL.createObjectURL(blob);
+          const fileName = baseName + "_part" + (index + 1) + ".txt";
+          
+          const p = document.createElement("p");
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = fileName;
+          a.textContent = "下载 " + fileName;
+          p.appendChild(a);
+          resultDiv.appendChild(p);
+        });
+      }
+    </script>
+  </body>
+</html>
