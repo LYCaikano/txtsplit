@@ -1,101 +1,82 @@
-document.getElementById("split-form").addEventListener("submit", async (e) => {
+document.getElementById('splitForm').addEventListener('submit', async function (e) {
   e.preventDefault();
 
-  const fileInput = document.getElementById("file");
-  const chunkSizeInput = document.getElementById("chunkSize");
-  const resultDiv = document.getElementById("result");
-
-  const file = fileInput.files[0];
-  const chunkSizeMB = parseFloat(chunkSizeInput.value);
+  const file = document.getElementById('file').files[0];
+  const chunkSizeMB = parseFloat(document.getElementById('chunkSize').value);
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = '';
 
   if (!file || isNaN(chunkSizeMB) || chunkSizeMB <= 0) {
-    alert("请确保选择了文件并正确输入了分块大小");
+    alert('请上传文件并输入合法的分块大小');
     return;
   }
 
   const MAX_BYTES = chunkSizeMB * 1024 * 1024;
   const arrayBuffer = await file.arrayBuffer();
   const bytes = new Uint8Array(arrayBuffer);
-  const decoder = new TextDecoder("utf-8", { fatal: true });
+  const baseName = file.name.replace(/\.[^/.]+$/, '');
 
-  let offset = 0;
-  let chunkIndex = 0;
+  const decoder = new TextDecoder("utf-8", { fatal: true });
   const chunks = [];
-  const baseName = file.name.replace(/\.[^/.]+$/, "");
+  let offset = 0;
+  let index = 1;
 
   while (offset < bytes.length) {
     let end = Math.min(offset + MAX_BYTES, bytes.length);
-    let valid = false;
-
-    while (!valid && end > offset) {
+    while (end > offset) {
       try {
-        decoder.decode(bytes.subarray(offset, end));
-        valid = true;
+        decoder.decode(bytes.slice(offset, end));
+        break;
       } catch (e) {
         end--;
       }
     }
 
     if (end === offset) {
-      resultDiv.innerHTML = "<p style='color:red;'>无法在不破坏 UTF-8 字符的情况下分割文件。</p>";
+      resultDiv.innerHTML = '无法分割文件，可能编码错误或不完整的 UTF-8。';
       return;
     }
 
-    const chunkData = bytes.slice(offset, end);
-    const base64Data = uint8ToBase64(chunkData);
-    const filename = `${++chunkIndex}_${baseName}.txt`;
+    const chunkBytes = bytes.slice(offset, end);
+    const filename = `${index}_${baseName}.txt`;
+    chunks.push({ name: filename, data: chunkBytes });
 
-    chunks.push({ filename, chunkData, base64Data });
     offset = end;
+    index++;
   }
 
-  // 显示下载链接列表
-  const ul = document.createElement("ul");
-  chunks.forEach((chunk) => {
-    const link = document.createElement("a");
-    link.href = `data:text/plain;base64,${chunk.base64Data}`;
-    link.download = chunk.filename;
-    link.textContent = chunk.filename;
-    const li = document.createElement("li");
-    li.appendChild(link);
-    ul.appendChild(li);
+  // 下载列表
+  const fileList = document.createElement('ul');
+  chunks.forEach(chunk => {
+    const blob = new Blob([chunk.data], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = chunk.name;
+    a.textContent = chunk.name;
+    li.appendChild(a);
+    fileList.appendChild(li);
   });
 
-  // 添加打包下载按钮
-  const zipButton = document.createElement("button");
-  zipButton.textContent = "打包下载 ZIP";
-  zipButton.onclick = () => downloadZip(chunks, baseName);
+  // ZIP 下载按钮
+  const zipButton = document.createElement('button');
+  zipButton.textContent = '打包下载 ZIP';
+  zipButton.onclick = async () => {
+    const zip = new JSZip();
+    chunks.forEach(chunk => {
+      zip.file(chunk.name, chunk.data);
+    });
 
-  resultDiv.innerHTML = "<h3>下载分割后的文件</h3>";
-  resultDiv.appendChild(ul);
+    const content = await zip.generateAsync({ type: "blob" });
+    const url = URL.createObjectURL(content);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${baseName}_split.zip`;
+    a.click();
+  };
+
+  resultDiv.innerHTML = '<h3>分割完成：</h3>';
+  resultDiv.appendChild(fileList);
   resultDiv.appendChild(zipButton);
 });
-
-function uint8ToBase64(u8Arr) {
-  const CHUNK_SIZE = 0x8000;
-  let index = 0;
-  let result = "";
-  while (index < u8Arr.length) {
-    const slice = u8Arr.subarray(index, Math.min(index + CHUNK_SIZE, u8Arr.length));
-    result += String.fromCharCode.apply(null, slice);
-    index += CHUNK_SIZE;
-  }
-  return btoa(result);
-}
-
-// 创建并下载 ZIP 文件
-function downloadZip(chunks, baseName) {
-  const zip = new JSZip();
-  chunks.forEach(({ filename, chunkData }) => {
-    zip.file(filename, chunkData);
-  });
-
-  zip.generateAsync({ type: "blob" }).then((content) => {
-    const blobURL = URL.createObjectURL(content);
-    const link = document.createElement("a");
-    link.href = blobURL;
-    link.download = `${baseName}_chunks.zip`;
-    link.click();
-    URL.revokeObjectURL(blobURL);
-  });
-}
