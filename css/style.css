@@ -106,9 +106,8 @@ button {
   animation: none; /* 移除动画 */
 }
 
-/* 去掉按钮渐变效果 */
 button:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* 保留悬浮时的背景颜色变化 */
+  background-color: rgba(255, 255, 255, 0.2); /* 悬浮时的背景颜色变化 */
 }
 
 .custom-file-button {
@@ -201,5 +200,13 @@ input[type=number] {
 .result-panel button {
   display: block;
   margin: 20px auto 0 auto;
-  width: 200px; /* 或根据你的设计改成合适的宽度 */
+  width: 200px;
 }
+
+#splitForm {
+  width: 75%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
