@@ -100,24 +100,42 @@ button,
   margin-bottom: 20px;
   cursor: pointer;
 
-  background-color: rgba(255, 255, 255, 0.1); /* 避免纯 transparent */
-  border: 1px solid white;
+  /* 核心修复 */
+  background-color: rgba(255, 255, 255, 0.01); /* iOS需要更接近透明的值 */
+  border: 1px solid rgba(255, 255, 255, 0.8); /* 增加边框透明度 */
   color: white;
-
-  -webkit-backdrop-filter: blur(10px); /* iOS 必须用 -webkit- */
+  
+  /* 模糊滤镜优化 */
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.459);
-  opacity: 1;
-  animation: none;
+  
+  /* 层叠上下文优化 */
+  position: relative; /* 确保正确的层叠上下文 */
+  transform: translateZ(0); /* 强制GPU加速 */
+  isolation: isolate; /* 防止混合模式冲突 */
+  
+  /* 阴影优化 */
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.3); /* 降低阴影强度 */
+  
+  /* 移除冗余属性 */
+  /* 删除 background-clip 相关声明（默认值已足够） */
 }
 
 button:hover,
 .custom-button:hover,
 .custom-file-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.15); /* 更平滑的过渡 */
+  border: 1px solid rgba(255, 255, 255, 1); /* 悬停时边框更明显 */
+}
+
+/* iOS 14+ 专用修复 */
+@supports (-webkit-touch-callout: none) {
+  button,
+  .custom-button,
+  .custom-file-button {
+    background-color: rgba(255, 255, 255, 0.001); /* iOS需要极低透明度 */
+    -webkit-backdrop-filter: saturate(180%) blur(10px); /* 增强滤镜效果 */
+  }
 }
 
 .custom-file-button {
