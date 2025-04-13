@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>文件分割器</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="login-form">
+    <h1>文件分割器</h1>
+    <p class="reg">请选择一个 TXT 文件，并输入每个分块的大小（单位：MB）。</p>
+    <form id="splitForm">
+      <!-- 自定义的文件选择按钮 -->
+      <label for="file" class="custom-button">选择文件</label>
+      <input type="file" id="file" name="file" accept=".txt" required hidden />
+      <p id="fileName" class="reg"></p> <!-- 显示文件名 -->
+    
+      <!-- 自定义的输入框 -->
+      <div class="input-wrap in-2">
+        <input type="number" id="chunkSize" name="chunkSize" min="0.1" step="0.1" placeholder="每个分块大小 (MB)" required />
+      </div>
+    
+      <!-- 自定义风格的上传按钮 -->
+      <button type="submit" class="custom-button">上传并分割</button>
+    </form>
+    
+    <div id="result" style="margin-top: 20px; color: white;"></div>
+  </div>
+
+  <!-- 引入 JSZip CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/encoding-japanese@2.0.0/encoding.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
