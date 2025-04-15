@@ -219,3 +219,42 @@ input[type=number] {
   align-items: center;
 }
 
+@media (max-width: 768px) {
+  #login-form {
+    width: 95%;
+    padding: 30px 15px;
+  }
+
+  .input-wrap,
+  input,
+  button,
+  .custom-button,
+  .custom-file-button {
+    width: 100%;
+    font-size: 0.9rem;
+    height: 50px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .reg {
+    font-size: 0.9rem;
+  }
+
+  .result-panel {
+    padding: 30px 20px;
+    font-size: 0.9rem;
+  }
+
+  .result-panel button {
+    width: 100%;
+    height: 50px;
+    font-size: 0.9rem;
+  }
+
+  #splitForm {
+    width: 100%;
+  }
+}
