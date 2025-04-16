@@ -48,18 +48,6 @@ body::after {
   overflow: hidden;
 }
 
-/* 手机端全屏自适应 */
-@media screen and (max-width: 768px) {
-  #login-form {
-    width: 95vw !important;        /* 95% 宽度 */
-    height: 95vh !important;       /* 95% 高度 */
-    max-width: none !important;
-    max-height: none !important;
-    padding: 30px 15px !important; /* 更小的边距 */
-    border-radius: 20px !important;
-  }
-}
-
 h1 {
   font-size: 2.5rem;
   color: white;
