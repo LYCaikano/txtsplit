@@ -106,6 +106,16 @@ button,
   align-items: center;
 }
 
+.custom-file-button input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+
 button:hover,
 .custom-button:hover,
 .custom-file-button:hover {
@@ -155,7 +165,6 @@ input[type=number] {
   width: 200px;
 }
 
-/* 分割表单居中 */
 #splitForm {
   width: 80%;
   display: flex;
@@ -163,42 +172,64 @@ input[type=number] {
   align-items: center;
 }
 
-/* 手机端样式 */
+/* 手机端样式覆盖 */
 @media (max-width: 768px) {
   #login-form {
-    width: 95%;
+    width: 95vw;
     max-width: none;
     height: 95vh;
-    padding: 30px 15px;
-    border-radius: 20px;
+    padding: 5vh 2vw;
+    border-radius: 2vh;
   }
 
   h1 {
-    font-size: 2.5rem;
+    font-size: 2.5em;
   }
 
   .reg {
-    font-size: 1.4rem;
+    font-size: 1.4em;
   }
 
   .input-wrap {
     width: 95%;
-    height: 75px;
+    height: 4em;
+    border-radius: 3em;
+    box-shadow: 0 0 0.3em rgba(255, 255, 255, 0.459);
   }
 
   input {
-    font-size: 1.3rem;
+    font-size: 1.3em;
+    padding: 0 1.5em;
   }
 
   button,
   .custom-button,
   .custom-file-button {
-    width: 95%;
-    height: 75px;
-    font-size: 1.3rem;
+    font-size: 1.4em;
+    height: 4em;
+    width: 90%;
+    border-radius: 3em;
+    margin-bottom: 1em;
+  }
+
+  .custom-file-button {
+    border: 1px solid white;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0.3em rgba(255, 255, 255, 0.459);
+    color: white;
   }
 
   #splitForm {
     width: 95%;
+  }
+
+  .result-panel {
+    font-size: 1.1em;
+    padding: 3em;
+    border-radius: 1.5em;
+  }
+
+  .result-panel button {
+    width: 15em;
   }
 }
