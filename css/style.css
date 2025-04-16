@@ -15,7 +15,6 @@ body {
   background-position: center;
   background-size: cover;
   height: 100vh;
-
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,29 +37,27 @@ body::after {
   flex-direction: column;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
-  width: 90vw;
-  height: 90vh;
-  padding: 5vh 2vw;
-  border-radius: 2vh;
-  border: 0.2vh solid rgba(255, 255, 255, 0.329);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 1vh 2.5vh rgba(0, 0, 0, 0.13);
+  width: 95%;
+  max-width: 1200px;
+  padding: 60px 30px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.329);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.13);
   overflow: hidden;
-
-  font-size: 1.2vw;
 }
 
 h1 {
-  font-size: 2.5em;
+  font-size: 3.5rem;
   color: white;
-  margin-bottom: 1em;
+  margin-bottom: 30px;
   text-align: center;
 }
 
 .reg {
-  font-size: 1em;
+  font-size: 1.5rem;
   color: white;
-  margin-bottom: 2em;
+  margin-bottom: 40px;
   text-align: center;
 }
 
@@ -68,74 +65,109 @@ h1 {
   border: 1px solid white;
   display: flex;
   align-items: center;
-  margin-bottom: 1.5em;
-  height: 4em;
+  margin-bottom: 30px;
+  height: 80px;
   width: 90%;
-  border-radius: 3em;
-  box-shadow: 0 0 0.3em rgba(255, 255, 255, 0.459);
+  border-radius: 50px;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.459);
 }
 
 input {
   background-color: transparent;
-  font-size: 1em;
+  font-size: 1.5rem;
   color: white;
-  padding: 0 1.5em;
+  padding: 0 30px;
   flex: 1;
 }
 
 input::placeholder {
   color: white;
+  font-size: 1.5rem;
 }
 
+/* 通用按钮样式（包括分割按钮） */
 button,
-.custom-button,
-.custom-file-button {
-  font-size: 1em;
-  height: 4em;
+.custom-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  height: 80px;
   width: 90%;
-  border-radius: 3em;
+  border-radius: 50px;
   font-weight: 600;
   letter-spacing: 1px;
-  margin-bottom: 1em;
+  margin-bottom: 30px;
   cursor: pointer;
-
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
-
-  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  box-shadow: 0 0 0.3em rgba(255, 255, 255, 0.459);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.459);
 }
 
 button:hover,
-.custom-button:hover,
-.custom-file-button:hover {
+.custom-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.6);
 }
 
+/* 自定义文件选择按钮 */
+.custom-file-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  height: 80px;
+  width: 90%;
+  border-radius: 50px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid white;
+  color: white;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.459);
+  position: relative;
+}
+
+.custom-file-button input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+
+.custom-file-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 移除数字输入箭头 */
 input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
 input[type=number] {
   -moz-appearance: textfield;
 }
 
 .result-panel {
-  margin-top: 2em;
+  margin-top: 30px;
   width: 100%;
-  padding: 3em;
-  border-radius: 1.5em;
+  padding: 60px;
+  border-radius: 15px;
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.329);
   backdrop-filter: blur(10px);
-  box-shadow: 0 1vh 2.5vh rgba(0, 0, 0, 0.13);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.13);
   color: white;
-  font-size: 1em;
+  font-size: 1.3rem;
 }
 
 .result-panel ul {
@@ -144,7 +176,7 @@ input[type=number] {
 }
 
 .result-panel li {
-  margin-bottom: 0.8em;
+  margin-bottom: 10px;
 }
 
 .result-panel a {
@@ -154,12 +186,15 @@ input[type=number] {
 
 .result-panel button {
   display: block;
-  margin: 2em auto 0 auto;
-  width: 15em;
+  margin: 20px auto 0 auto;
+  width: 300px;
+  font-size: 1.2rem;
+  height: 70px;
+  border-radius: 40px;
 }
 
 #splitForm {
-  width: 75%;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
