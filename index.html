@@ -2,14 +2,16 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>TXT分割器</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div id="login-form">
+  <div id="split-form">
     <h1>TXT分割器</h1>
-    <p class="reg">请选择一个 TXT 文件，并输入每个分块的大小（单位：MB）。</p>
-    <form id="splitForm">
+    <p class="reg">请选择一个UTF8或UTF16LE的 txt 文件，并输入每个分块的大小（单位：MB）。</p>
+    <form id="splitForm" novalidate>
       <!-- 自定义的文件选择按钮 -->
       <label for="file" class="custom-button">选择文件</label>
       <input type="file" id="file" name="file" accept=".txt" required hidden />
@@ -27,9 +29,14 @@
     <div id="result" style="margin-top: 20px; color: white;"></div>
   </div>
 
-  <!-- 引入 JSZip CDN -->
+  <!-- 引入js -->
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/encoding-japanese@2.0.0/encoding.js"></script>
   <script src="js/main.js"></script>
+  <div id="custom-alert"></div>
+  <footer id="custom-footer">
+    <span>© 2025 &nbsp;|&nbsp;</span>
+    <a href="https://github.com/LYCaikano/txtsplit" target="_blank">GitHub 项目地址</a>
+  </footer>  
 </body>
 </html>

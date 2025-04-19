@@ -7,12 +7,19 @@ document.getElementById('splitForm').addEventListener('submit', async function (
   e.preventDefault();
 
   const file = document.getElementById('file').files[0];
-  const chunkSizeMB = parseFloat(document.getElementById('chunkSize').value);
+  const chunkSizeInput = document.getElementById('chunkSize');
+  const chunkSizeMB = parseFloat(chunkSizeInput.value);
   const resultDiv = document.getElementById('result');
   resultDiv.innerHTML = '';
 
-  if (!file || isNaN(chunkSizeMB) || chunkSizeMB <= 0) {
-    alert('请上传文件并输入合法的分块大小');
+  // 自定义校验逻辑
+  if (!file) {
+    showAlert("请选择一个TXT文件");
+    return;
+  }
+
+  if (!chunkSizeInput.value || isNaN(chunkSizeMB) || chunkSizeMB <= 0) {
+    showAlert("请输入分块大小");
     return;
   }
 
@@ -39,7 +46,7 @@ document.getElementById('splitForm').addEventListener('submit', async function (
   } else if (encoding === 'utf-16le') {
     splitUTF16LE(bytes, baseName, MAX_BYTES);
   } else {
-    resultDiv.innerHTML = '仅支持utf8及utf16！';
+    showAlert("仅支持utf8及utf16");
   }
 });
 
@@ -99,22 +106,6 @@ function displayResult(chunks, baseName, encoding = 'utf-8') {
   const resultDiv = document.getElementById('result');
   resultDiv.innerHTML = '<h3>分割完成!</h3>';
 
-  const fileList = document.createElement('ul');
-  chunks.forEach(chunk => {
-    const mimeType = (encoding === 'utf-16le') ? 'application/octet-stream' : 'text/plain';
-    const blob = new Blob([chunk.data], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = chunk.name;
-    a.textContent = chunk.name;
-    li.appendChild(a);
-    fileList.appendChild(li);
-  });
-
-  // resultDiv.appendChild(fileList);
-
   const zipButton = document.createElement('button');
   zipButton.textContent = '下载ZIP';
   zipButton.style.display = 'block';
@@ -135,3 +126,21 @@ function displayResult(chunks, baseName, encoding = 'utf-8') {
 
   resultDiv.appendChild(zipButton);
 }
+
+let alertTimeout;
+
+function showAlert(message) {
+  const alertEl = document.getElementById('custom-alert');
+  alertEl.textContent = message;
+  alertEl.classList.remove('hide');
+  alertEl.classList.add('show');
+
+  if (alertTimeout) clearTimeout(alertTimeout);
+
+  alertTimeout = setTimeout(() => {
+    alertEl.classList.remove('show');
+    alertEl.classList.add('hide');
+    alertTimeout = null;
+  }, 2000);
+}
+
