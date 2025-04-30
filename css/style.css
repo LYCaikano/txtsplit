@@ -121,7 +121,7 @@ button {
   backdrop-filter: blur(10px);
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.459);
   opacity: 1;
-  animation: none; /* 移除动画 */
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 /* 去掉按钮渐变效果 */
@@ -148,7 +148,7 @@ button:hover {
   backdrop-filter: blur(10px);
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.459);
   opacity: 1;
-  animation: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .custom-file-button:hover {
@@ -174,11 +174,18 @@ button:hover {
   backdrop-filter: blur(10px);
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.459);
   opacity: 1;
-  animation: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .custom-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+button:active,
+.custom-button:active,
+.custom-file-button:active {
+  background-color: rgba(255, 255, 255, 0.35);
+  transform: scale(0.96);
 }
 
 /* 移除 input[type=number] 的上下箭头（spinner） */
